@@ -8,7 +8,7 @@
       <div class="row">
         <ul class="list-group">
           {% for offer in offer_list %}
-              <a href="{% url 'ac:offer_show' offer.id %}" class="list-group-item">
+              <a href="{% url 'ac:offer_detail' offer.id %}" class="list-group-item">
               <div class="container">
               <div class="col-sm-3">
                 <h4 class="list-group-item-heading">{{ offer.deadline }}</h4>
@@ -18,7 +18,7 @@
               <p class="list-group-item-text">{{ offer.description }}</p>
               </div>
               <div class="col-sm-1">
-                <progress max="100" value="{% widthratio offer.rating__rating__avg 4 100 %}"></progress>
+                <progress max="100" value="{% widthratio offer.weighted_avg 4 100 %}"></progress>
               </div>
               </div>
             </a>

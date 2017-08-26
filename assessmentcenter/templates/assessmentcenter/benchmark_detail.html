@@ -8,7 +8,7 @@
       <div class="row">
         <ul class="list-group">
           {% for rating in benchmark.rating_set.all %}
-              <a href="{% url 'ac:offer_show' rating.offer.id %}" class="list-group-item">
+              <a href="{% url 'ac:offer_detail' rating.offer.id %}" class="list-group-item">
               <div class="container">
               <div class="col-sm-3">
                 <progress max="4" value="{{ rating.rating }}"></progress>
@@ -24,4 +24,18 @@
 {% else %}
     <p>There are no ratings for this benchmark.</p>
 {% endif %}
+  <div class="container">
+    <div class="col-sm-5">
+      <form action="{% url 'ac:benchmark_delete' benchmark.id %}" method="get">
+      {% csrf_token %}
+        <button type="submit" class="btn btn-lg">Delete</button>
+      </form>
+    </div>
+    <div class="col-sm-5">
+      <form action="{% url 'ac:benchmark_update' benchmark.id %}" method="get">
+      {% csrf_token %}
+        <button type="submit" class="btn btn-lg">Update</button>
+      </form>
+    </div>
+  </div>
 {% endblock %}

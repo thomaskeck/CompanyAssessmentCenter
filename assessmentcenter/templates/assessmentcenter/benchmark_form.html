@@ -4,9 +4,9 @@
 
 <div class="container">
 <div class="page-header">
-  <h1>Add a new Offer by a Company</h1>
+  <h1>Benchmark</h1>
 </div>
-<form action="{% url 'ac:offer_add' %}" method="post">
+<form action="" method="post">
       {% csrf_token %}
 			{% for field in form %}
 					<div class="form-group row">
@@ -20,7 +20,7 @@
 							</div>
 					</div>
 			{% endfor %}
-      <button type="submit"  class="btn btn-lg btn-success">Submit</button>
+      <button type="submit"  class="btn btn-lg btn-success" value="Save">Submit</button>
 </form>
 </div>
 {% endblock %}

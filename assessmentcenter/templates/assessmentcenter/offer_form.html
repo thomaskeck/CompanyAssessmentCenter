@@ -1,0 +1,26 @@
+{% extends "assessmentcenter/base.html" %}
+
+{% block content %}
+
+<div class="container">
+<div class="page-header">
+  <h1>Offer from Company</h1>
+</div>
+<form action="" method="post">
+      {% csrf_token %}
+			{% for field in form %}
+					<div class="form-group row">
+							{{ field.errors }}
+							<label for="{{ field.id_for_label }}" class="control-label col-sm-2 col-lg-2">{{ field.label }} </label>
+							<div class="col-sm-4 col-lg-4">
+								{{ field }}
+							{% if field.help_text %}
+							<p class="help">{{ field.help_text|safe }}</p>
+							{% endif %}
+							</div>
+					</div>
+			{% endfor %}
+      <button type="submit"  class="btn btn-lg btn-success">Submit</button>
+</form>
+</div>
+{% endblock %}
