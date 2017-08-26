@@ -1,0 +1,27 @@
+{% extends "assessmentcenter/base.html" %}
+
+{% block content %}
+<div class="page-header">
+<h1>{{ benchmark.name }}</h1>
+      </div>
+{% if benchmark.rating_set %}
+      <div class="row">
+        <ul class="list-group">
+          {% for rating in benchmark.rating_set.all %}
+              <a href="{% url 'ac:offer_show' rating.offer.id %}" class="list-group-item">
+              <div class="container">
+              <div class="col-sm-3">
+                <progress max="4" value="{{ rating.rating }}"></progress>
+              </div>
+              <div class="col-sm-7">
+                <h4 class="list-group-item-heading">{{ rating.offer.name }}</h4>
+              </div>
+              </div>
+            </a>
+          {% endfor %}
+        </ul>
+      </div>
+{% else %}
+    <p>There are no ratings for this benchmark.</p>
+{% endif %}
+{% endblock %}

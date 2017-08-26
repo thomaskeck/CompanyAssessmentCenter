@@ -1,0 +1,27 @@
+{% extends "assessmentcenter/base.html" %}
+
+{% block content %}
+<div class="page-header">
+        <h1>Available Benchmarks</h1>
+      </div>
+{% if benchmark_list %}
+      <div class="row">
+        <ul class="list-group">
+          {% for benchmark in benchmark_list %}
+              <a href="{% url 'ac:benchmark_show' benchmark.id %}" class="list-group-item">
+              <div class="container">
+              <div class="col-sm-3">
+                <h4 class="list-group-item-heading">{{ benchmark.weight }}</h4>
+              </div>
+              <div class="col-sm-7">
+                <h4 class="list-group-item-heading">{{ benchmark.name }}</h4>
+              </div>
+              </div>
+            </a>
+          {% endfor %}
+        </ul>
+      </div>
+{% else %}
+    <p>No benchmarks are available.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "assessmentcenter/base.html" %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <div class="col-sm-5">
+      <h1>{{ offer.name }}</h1>
+    </div>
+    <div class="col-sm-5">
+      <p>{{ offer.description }}</p>
+    </div>
+  </div>
+</div>
+{% if offer.rating_set %}
+      <div class="row">
+        <ul class="list-group">
+          {% for rating in offer.rating_set.all %}
+              <a href="{% url 'ac:benchmark_show' rating.benchmark.id %}" class="list-group-item">
+              <div class="container">
+              <div class="col-sm-3">
+                <progress max="4" value="{{ rating.rating }}"></progress>
+              </div>
+              <div class="col-sm-7">
+                <h4 class="list-group-item-heading">{{ rating.benchmark.name }}</h4>
+              </div>
+              </div>
+            </a>
+          {% endfor %}
+        </ul>
+      </div>
+{% else %}
+    <p>There are no ratings for this offer.</p>
+{% endif %}
+  <div class="container">
+    <div class="col-sm-5">
+      <h4>Deadline: {{ offer.deadline }}</h4>
+    </div>
+    <div class="col-sm-5">
+      <form action="{% url 'ac:offer_delete' offer.id %}" method="get">
+      {% csrf_token %}
+        <button type="submit" class="btn btn-lg">Delete</button>
+      </form>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "assessmentcenter/base.html" %}
+
+{% block content %}
+<div class="page-header">
+        <h1>Available Offers</h1>
+      </div>
+{% if offer_list %}
+      <div class="row">
+        <ul class="list-group">
+          {% for offer in offer_list %}
+              <a href="{% url 'ac:offer_show' offer.id %}" class="list-group-item">
+              <div class="container">
+              <div class="col-sm-3">
+                <h4 class="list-group-item-heading">{{ offer.deadline }}</h4>
+              </div>
+              <div class="col-sm-6">
+                <h4 class="list-group-item-heading">{{ offer.name }}</h4>
+              <p class="list-group-item-text">{{ offer.description }}</p>
+              </div>
+              <div class="col-sm-1">
+                <progress max="100" value="{% widthratio offer.rating__rating__avg 4 100 %}"></progress>
+              </div>
+              </div>
+            </a>
+          {% endfor %}
+        </ul>
+      </div>
+{% else %}
+    <p>There are no job offers at the moment.</p>
+{% endif %}
+{% endblock %}
