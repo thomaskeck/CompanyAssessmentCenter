@@ -36,6 +36,7 @@ class OfferForm(forms.Form):
             self.fields['bm_%s' % benchmark.id] = forms.IntegerField(label=benchmark.name, min_value=0, max_value=4, required=True,
                     widget=forms.NumberInput(attrs={'type':'range', 'min': '0', 'max': '4', 'name': benchmark.name, 'class': 'form-control'}))
         self.fields['offer_id'] = forms.IntegerField(label="", widget=forms.HiddenInput())
+        self.fields['offer_id'].initial = 0
 
     def init_fields(self, pk):
         offer = Offer.objects.get(pk=pk)
