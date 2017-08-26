@@ -42,7 +42,7 @@ class OfferForm(forms.Form):
         offer = Offer.objects.get(pk=pk)
         self.fields['name'].initial = offer.name
         self.fields['description'].initial = offer.description
-        self.fields['deadline'].initial = offer.deadline
+        self.fields['deadline'].initial = str(offer.deadline.date() + datetime.timedelta(days=1))
         self.fields['offer_id'].initial = pk
         for rating in offer.rating_set.all():
             self.fields['bm_%s' % rating.benchmark.id].initial = rating.rating
