@@ -9,7 +9,22 @@ from django.db.models import Count, Avg, F, FloatField, Sum
 from django.utils.dateparse import parse_datetime
 from django import forms
 
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+
 from .models import Benchmark, Offer, Rating
+
+
+@receiver(post_save, sender=Benchmark)
+def post_save_benchmark(sender, instance, created, **kwargs):
+    if created:
+        for offer in Offer.objects.all():
+            for rating in offer.rating_set.all():
+                if rating.benchmark == instance:
+                    break
+            else:
+                rating = Rating(offer=offer, benchmark=instance, rating=2)
+                rating.save()
 
 
 class OfferListView(generic.ListView):
@@ -75,7 +90,7 @@ class OfferForm(forms.Form):
                 if rating.benchmark == benchmark:
                     break
             else:
-                rating = Rating(offer=offer, benchmark=benchmark, rating=0)
+                rating = Rating(offer=offer, benchmark=benchmark, rating=2)
             rating.rating = cn['bm_%s' % benchmark.id]
             rating.save()
         return offer.id
