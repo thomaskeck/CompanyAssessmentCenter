@@ -1,10 +1,32 @@
 {% extends "assessmentcenter/base.html" %}
 
 {% block content %}
+<script type="text/javascript">
+	google.charts.load("current", {packages:["corechart"]});
+	google.charts.setOnLoadCallback(drawChart);
+	function drawChart() {
+		var data = google.visualization.arrayToDataTable([
+			['Offer', 'Rating'],
+      {% for rating in benchmark.rating_set.all %}
+				['{{ rating.offer.name }}', {{ rating.rating }}],  
+			{% endfor %}
+      ]);
+			var options = {
+          title: 'Rating Distribution',
+          legend: { position: 'none' },
+      };
+			var chart = new google.visualization.Histogram(document.getElementById('chart_div'));
+			chart.draw(data, options);
+   }
+</script>
+ 
 <div class="page-header">
 <h1>{{ benchmark.name }}</h1>
       </div>
 {% if benchmark.rating_set %}
+      <div class="row">
+			<div id="chart_div" style="width: 900px; height: 500px;"></div>
+      </div>
       <div class="row">
         <ul class="list-group">
           {% for rating in benchmark.rating_set.all %}
