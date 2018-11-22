@@ -4,7 +4,9 @@ from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.views import generic, View
-from django.db.models import Count, Avg, F, FloatField, Sum
+from django.db.models import Count, Avg, F, FloatField, Sum, functions as f
+from django.db.models.functions.base import Coalesce, Cast
+from django.db.models.functions.datetime import Now
 
 from django.utils.dateparse import parse_datetime
 from django import forms
@@ -31,7 +33,9 @@ class OfferListView(generic.ListView):
     def get_queryset(self):
         weighted_avg = (Sum(F('rating__rating')*F('rating__benchmark__weight'), output_field=FloatField()) 
                        / Sum(F('rating__benchmark__weight'), output_field=FloatField()))
-        return Offer.objects.order_by('deadline').annotate(weighted_avg=weighted_avg)
+        days = Cast(Coalesce(F('deadline'), Now()) - Now(),
+                           output_field=FloatField()) / 1000 / 1000 / (60 * 60 * 24)
+        return Offer.objects.order_by('deadline').annotate(weighted_avg=weighted_avg, days=days)
 
 
 class OfferDetailView(generic.DetailView):
@@ -41,7 +45,7 @@ class OfferDetailView(generic.DetailView):
 class OfferForm(forms.Form):
     name = forms.CharField(label='Offer Name', min_length=1, max_length=100, strip=True, required=True)
     description = forms.CharField(label='Offer Description', max_length=10000, widget=forms.Textarea)
-    deadline = forms.DateField(label='Deadline', required=True,
+    deadline = forms.DateField(label='Deadline', required=False,
                                widget=forms.DateInput(attrs={'type':'date'}))
 
     def __init__(self, *args, **kwargs):
@@ -57,15 +61,16 @@ class OfferForm(forms.Form):
         offer = Offer.objects.get(pk=pk)
         self.fields['name'].initial = offer.name
         self.fields['description'].initial = offer.description
-        self.fields['deadline'].initial = str(offer.deadline.date() + datetime.timedelta(days=1))
+        if offer.deadline is not None:
+            self.fields['deadline'].initial = str(offer.deadline.date() + datetime.timedelta(days=1))
         self.fields['offer_id'].initial = pk
         for rating in offer.rating_set.all():
             self.fields['bm_%s' % rating.benchmark.id].initial = rating.rating
 
     def clean_deadline(self):
         deadline = self.cleaned_data['deadline']
-        if datetime.date.today() >= deadline:
-                raise forms.ValidationError(u'Deadline cannot be in the past: "%s"' % deadline)
+        if deadline is not None and datetime.date.today() >= deadline:
+            raise forms.ValidationError(u'Deadline cannot be in the past: "%s"' % deadline)
         return deadline
 
     def create_offer(self):
@@ -102,7 +107,7 @@ class OfferCreateView(View):
 
     def get(self, request, *args, **kwargs):
         form = self.form_class()
-        return render(request, self.template_name, {'form': form}) 
+        return render(request, self.template_name, {'form': form})
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
@@ -119,7 +124,7 @@ class OfferUpdateView(View):
     def get(self, request, pk, *args, **kwargs):
         form = self.form_class()
         form.init_fields(pk)
-        return render(request, self.template_name, {'form': form}) 
+        return render(request, self.template_name, {'form': form})
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)

@@ -16,13 +16,13 @@ class Benchmark(models.Model):
 class Offer(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(max_length=10000)
-    deadline = models.DateTimeField()
+    deadline = models.DateTimeField(null=True, blank=True)
     
     def __str__(self):
         return self.name
 
     def is_expired(self):
-        return self.deadline < timezone.now()
+        return self.deadline is not None and self.deadline < timezone.now()
 
 
 class Rating(models.Model):

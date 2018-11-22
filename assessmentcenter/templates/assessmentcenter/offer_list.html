@@ -11,7 +11,16 @@
               <a href="{% url 'ac:offer_detail' offer.id %}" class="list-group-item">
               <div class="container">
               <div class="col-sm-3">
-                <h4 class="list-group-item-heading">{{ offer.deadline }}</h4>
+                  {% if offer.deadline is not None %}
+                  <h4 class="list-group-item-heading">
+                      {{ offer.deadline|date:"SHORT_DATE_FORMAT" }}
+                      {% if offer.days > 0 %}
+                      ({{ offer.days|floatformat:0 }} days left)
+                      {% else %}
+                      ({{ offer.days|floatformat:0 }} days)
+                      {% endif %}
+                  </h4>
+                  {% endif %}
               </div>
               <div class="col-sm-6">
                 <h4 class="list-group-item-heading">{{ offer.name }}</h4>
