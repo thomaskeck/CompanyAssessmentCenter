@@ -20,8 +20,9 @@ Job Offers from Companies can be rated on a scale from 0 to 4, and
 compared to each other using these benchmarks.
 
 # Usage
- * pip3 install django
- * python manage.py makemigrations assessmentcenter
+ * git clone <repository> && cd <project>
+ * pip3 install --requirement requirements.txt
+ * python3 manage.py makemigrations assessmentcenter
  * python3 manage.py migrate
  * python3 manage.py createsuperuser
  * python3 manage.py runserver
