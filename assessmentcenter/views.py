@@ -1,18 +1,15 @@
 import datetime
 
-from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponseRedirect
-from django.urls import reverse, reverse_lazy
-from django.views import generic, View
-from django.db.models import Count, Avg, F, FloatField, Sum, functions as f
+from django import forms
+from django.db.models import F, FloatField, Sum
 from django.db.models.functions.base import Coalesce, Cast
 from django.db.models.functions.datetime import Now
-
-from django.utils.dateparse import parse_datetime
-from django import forms
-
-from django.dispatch import receiver
 from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.http import HttpResponseRedirect
+from django.shortcuts import render
+from django.urls import reverse_lazy
+from django.views import generic, View
 
 from .models import Benchmark, Offer, Rating
 
